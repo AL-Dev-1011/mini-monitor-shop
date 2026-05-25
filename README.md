@@ -68,6 +68,7 @@ Admins can manage products, manage customer orders, and view dashboard summaries
 - XAMPP
 
 ---
+<<<<<<< HEAD
 ## Database
 
 This project includes a SQL backup file:

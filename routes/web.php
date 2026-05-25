@@ -85,10 +85,10 @@ Route::middleware('auth')->group(function () {
     ->name('profile.destroy');
 
   /*
-    |--------------------------------------------------------------------------
-    | ADMIN PRODUCT ROUTES
-    |--------------------------------------------------------------------------
-    */
+  |--------------------------------------------------------------------------
+  | ADMIN PRODUCT ROUTES
+  |--------------------------------------------------------------------------
+  */
 
   Route::get('/products/create', [ProductController::class, 'create'])
     ->name('products.create');
@@ -108,22 +108,24 @@ Route::middleware('auth')->group(function () {
     ->name('products.destroy');
 
   /*
-    |--------------------------------------------------------------------------
-    | ADMIN ORDER ROUTES
-    |--------------------------------------------------------------------------
-    */
+  |--------------------------------------------------------------------------
+  | ADMIN ORDER ROUTES
+  |--------------------------------------------------------------------------
+  */
 
   Route::get('/admin/orders', [AdminOrderController::class, 'index'])
     ->name('admin.orders.index');
 
+  Route::get('/admin/orders/{order}', [AdminOrderController::class, 'show'])
+    ->name('admin.orders.show');
+
   Route::patch('/admin/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])
     ->name('admin.orders.updateStatus');
-
   /*
-    |--------------------------------------------------------------------------
-    | ADMIN ฏASHBOARD ROUTES
-    |--------------------------------------------------------------------------
-    */
+  |--------------------------------------------------------------------------
+  | ADMIN DASHBOARD ROUTES
+  |--------------------------------------------------------------------------
+  */
 
   Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
     ->name('admin.dashboard');
@@ -131,7 +133,7 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| PRODUCT DETAIL ต้องอยู่หลัง /products/create เสมอ
+| PRODUCT DETAIL ROUTE (PUBLIC)
 |--------------------------------------------------------------------------
 */
 

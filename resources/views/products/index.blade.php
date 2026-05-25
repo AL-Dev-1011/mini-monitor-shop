@@ -4,7 +4,7 @@
 
     $filters = [
         'brand' => ['Dell', 'LG', 'Samsung', 'ASUS', 'AOC', 'Acer', 'MSI', 'Gigabyte', 'ViewSonic', 'Xiaomi'],
-        'application' => ['business / personal', 'color grading', 'gaming', 'dual mode'],
+        'application' => ['business / personal', 'color grading', 'gaming'],
         'display_size' => ['less 24', '25 - 27', '30 - 32', '32 more'],
         'resolution' => [
             '6144 x 2560' => '6K UW (6144 x 2560)',
@@ -35,7 +35,7 @@
         '601-more' => '$601 - more',
     ];
 
-    $activeFilters = request()->except(['sort', 'page', 'min_price', 'max_price', '_token', 'view']);
+    $activeFilters = request()->except(['sort', 'page', 'min_price', 'max_price', '_token', 'view', 'delete']);
 
     $hasActiveFilters = false;
 
@@ -90,7 +90,11 @@
         <input type="hidden" name="view" value="{{ $currentView }}">
         <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] xl:grid-cols-[240px_1fr] gap-6 items-start">
 
-          {{-- FILTER SIDEBAR --}}
+          {{-- /*
+          |--------------------------------------------------------------------------
+          | FILTER SIDEBAR
+          |--------------------------------------------------------------------------
+          */ --}}
           <aside class="space-y-3 lg:sticky lg:top-6">
 
             {{-- FILTER HEADER --}}
@@ -112,7 +116,14 @@
 
                 @foreach ($activeFilters as $key => $values)
                   @foreach ((array) $values as $value)
-                    @if ($value !== null && $value !== '' && $value !== '1' && $key !== '_token' && strlen($value) < 40)
+                    @if (
+                        $value !== null &&
+                            $value !== '' &&
+                            $value !== '1' &&
+                            $key !== '_token' &&
+                            $key !== 'delete' &&
+                            strtolower($value) !== 'delete' &&
+                            strlen($value) < 40)
                       @php
                         $tagLabel = $value;
 
@@ -185,7 +196,7 @@
                     class="rounded-xl border-neutral-200 text-sm">
                 </div>
 
-                <button class="w-full py-2.5 bg-black text-white rounded-xl text-sm font-black">
+                <button type="submit" class="w-full py-2.5 bg-black text-white rounded-xl text-sm font-black">
                   Apply Price
                 </button>
 
@@ -250,7 +261,12 @@
 
           </aside>
 
-          {{-- PRODUCTS AREA --}}
+
+          {{-- /*
+          |--------------------------------------------------------------------------
+          | MAIN AREA
+          |--------------------------------------------------------------------------
+          */ --}}
           <main>
 
             {{-- TOP BAR --}}
@@ -260,10 +276,6 @@
                 <h1 class="text-3xl font-black text-black">
                   Monitor Products
                 </h1>
-
-                <p class="mt-1 font-bold text-neutral-500">
-                  {{ $products->count() }} Results
-                </p>
               </div>
 
               <div class="flex items-center gap-4">
@@ -684,6 +696,11 @@
                   @endif
                 @endforeach
 
+
+              </div>
+
+              <div class="mt-10">
+                {{ $products->links() }}
               </div>
             @else
               <div class="bg-white border border-neutral-200 rounded-3xl p-12 text-center">

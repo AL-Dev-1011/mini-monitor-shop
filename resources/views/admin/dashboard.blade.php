@@ -90,6 +90,17 @@
 
           <tbody class="divide-y divide-neutral-200">
             @forelse($latestOrders as $order)
+              @php
+                $statusClass = match ($order->status) {
+                    'pending' => 'bg-yellow-100 text-yellow-700',
+                    'paid' => 'bg-blue-100 text-blue-700',
+                    'shipped' => 'bg-purple-100 text-purple-700',
+                    'completed' => 'bg-green-100 text-green-700',
+                    'cancelled' => 'bg-red-100 text-red-700',
+                    default => 'bg-neutral-100 text-neutral-700',
+                };
+              @endphp
+
               <tr>
                 <td class="p-4 font-black">
                   {{ $order->order_number }}
@@ -108,7 +119,7 @@
                 </td>
 
                 <td class="p-4">
-                  <span class="px-3 py-1 rounded-full bg-neutral-100 text-xs font-black">
+                  <span class="px-3 py-1 rounded-full text-xs font-black {{ $statusClass }}">
                     {{ ucfirst($order->status) }}
                   </span>
                 </td>

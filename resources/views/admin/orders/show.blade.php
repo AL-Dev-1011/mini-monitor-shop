@@ -2,10 +2,10 @@
   <div class="bg-white min-h-screen">
     <div class="max-w-7xl mx-auto px-6 py-10">
 
+      {{-- HEADER --}}
       <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <a href="{{ route('admin.orders.index') }}"
-            class="text-sm font-bold text-neutral-500 hover:text-black">
+          <a href="{{ route('admin.orders.index') }}" class="text-sm font-bold text-neutral-500 hover:text-black">
             ← Back to Orders
           </a>
 
@@ -18,14 +18,12 @@
           </p>
         </div>
 
-        <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST"
-          class="flex items-center gap-3">
+        <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST" class="flex items-center gap-3">
           @csrf
           @method('PATCH')
 
-          <select name="status"
-            class="rounded-2xl border-neutral-300 text-sm font-bold">
-            @foreach(['pending','paid','shipped','completed','cancelled'] as $status)
+          <select name="status" class="rounded-2xl border-neutral-300 text-sm font-bold">
+            @foreach (['pending', 'paid', 'shipped', 'completed', 'cancelled'] as $status)
               <option value="{{ $status }}" @selected($order->status === $status)>
                 {{ ucfirst($status) }}
               </option>
@@ -38,7 +36,7 @@
         </form>
       </div>
 
-      @if(session('success'))
+      @if (session('success'))
         <div class="mb-6 p-4 bg-green-100 text-green-700 rounded-2xl font-bold">
           {{ session('success') }}
         </div>
@@ -49,8 +47,8 @@
         {{-- LEFT --}}
         <div class="space-y-6">
 
-          {{-- ORDER ITEMS --}}
-          <div class="bg-white border border-neutral-200 rounded-3xl overflow-hidden">
+          {{-- ITEMS --}}
+          <div class="bg-white border border-neutral-200 rounded-3xl overflow-hidden shadow-sm">
             <div class="p-6 border-b border-neutral-200">
               <h2 class="text-2xl font-black">
                 Ordered Products
@@ -58,8 +56,9 @@
             </div>
 
             <div class="divide-y divide-neutral-200">
-              @foreach($order->items as $item)
+              @forelse($order->items as $item)
                 <div class="p-6 flex gap-5">
+
                   <div class="w-28 h-24 rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-50 shrink-0">
                     <img src="{{ $item->image ?: 'https://placehold.co/300x200' }}"
                       class="w-full h-full object-contain">
@@ -67,7 +66,7 @@
 
                   <div class="flex-1 min-w-0">
                     <p class="text-xs font-black uppercase tracking-widest text-blue-600">
-                      {{ $item->brand }}
+                      {{ $item->brand ?? '-' }}
                     </p>
 
                     <h3 class="mt-1 text-xl font-black text-black">
@@ -86,20 +85,25 @@
                       ${{ number_format($item->subtotal, 2) }}
                     </p>
                   </div>
+
                 </div>
-              @endforeach
+              @empty
+                <div class="p-8 text-center text-neutral-500 font-bold">
+                  No items found.
+                </div>
+              @endforelse
             </div>
           </div>
 
-          {{-- CUSTOMER --}}
+          {{-- CUSTOMER + ADDRESS --}}
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <div class="bg-white border border-neutral-200 rounded-3xl p-6">
+            <div class="bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm">
               <h2 class="text-xl font-black mb-4">
                 Customer Information
               </h2>
 
-              <div class="space-y-3 text-sm">
+              <div class="space-y-4 text-sm">
                 <div>
                   <p class="text-neutral-500 font-bold">Name</p>
                   <p class="font-black">{{ $order->full_name }}</p>
@@ -117,7 +121,7 @@
               </div>
             </div>
 
-            <div class="bg-white border border-neutral-200 rounded-3xl p-6">
+            <div class="bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm">
               <h2 class="text-xl font-black mb-4">
                 Shipping Address
               </h2>
@@ -136,8 +140,7 @@
         {{-- RIGHT --}}
         <aside class="lg:sticky lg:top-8 space-y-6">
 
-          {{-- SUMMARY --}}
-          <div class="bg-neutral-50 border border-neutral-200 rounded-3xl p-6">
+          <div class="bg-neutral-50 border border-neutral-200 rounded-3xl p-6 shadow-sm">
             <h2 class="text-2xl font-black mb-6">
               Order Summary
             </h2>

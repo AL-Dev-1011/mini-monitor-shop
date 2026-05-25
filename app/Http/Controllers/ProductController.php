@@ -122,7 +122,9 @@ class ProductController extends Controller {
       $products->latest();
     }
 
-    $products = $products->get();
+    $products = $products
+      ->paginate(22)
+      ->withQueryString();
 
     $filterCounts = $this->getFilterCounts();
 
@@ -391,3 +393,6 @@ class ProductController extends Controller {
     return $filterCounts;
   }
 }
+
+// อะไรบ้างที่ ควรลบจาก products/ index แล้วเอาไปใส่ใน productcontroller
+// เอา productController มาทั้งหน้า
