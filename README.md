@@ -68,12 +68,15 @@ Admins can manage products, manage customer orders, and view dashboard summaries
 - XAMPP
 
 ---
+<<<<<<< HEAD
 ## Database
 
 This project includes a SQL backup file:
 
 ```txt
 database/sql/mini_shop_project.sql
+=======
+>>>>>>> f55fb7776db312c7833304a0f30bb0d09c11b427
 
 # Installation
 
