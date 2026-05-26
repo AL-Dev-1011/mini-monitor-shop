@@ -23,7 +23,7 @@
       </div>
 
       {{-- SUCCESS --}}
-      @if (session('success'))
+      @if(session('success'))
         <div class="mb-6 p-4 bg-green-100 text-green-700 rounded-2xl font-bold">
           {{ session('success') }}
         </div>
@@ -71,13 +71,13 @@
               @forelse($orders as $order)
 
                 @php
-                  $statusClass = match ($order->status) {
-                      'pending' => 'bg-yellow-100 text-yellow-700',
-                      'paid' => 'bg-blue-100 text-blue-700',
-                      'shipped' => 'bg-purple-100 text-purple-700',
-                      'completed' => 'bg-green-100 text-green-700',
-                      'cancelled' => 'bg-red-100 text-red-700',
-                      default => 'bg-neutral-100 text-neutral-700',
+                  $statusClass = match($order->status) {
+                    'pending' => 'bg-yellow-100 text-yellow-700',
+                    'paid' => 'bg-blue-100 text-blue-700',
+                    'shipped' => 'bg-purple-100 text-purple-700',
+                    'completed' => 'bg-green-100 text-green-700',
+                    'cancelled' => 'bg-red-100 text-red-700',
+                    default => 'bg-neutral-100 text-neutral-700',
                   };
                 @endphp
 
@@ -157,20 +157,25 @@
                       </a>
 
                       {{-- STATUS FORM --}}
-                      <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST"
+                      <form action="{{ route('admin.orders.updateStatus', $order) }}"
+                        method="POST"
                         class="flex items-center gap-2">
 
                         @csrf
                         @method('PATCH')
 
-                        <select name="status" class="rounded-xl border-neutral-300 text-sm font-semibold">
+                        <select name="status"
+                          class="rounded-xl border-neutral-300 text-sm font-semibold">
 
-                          @foreach (['pending', 'paid', 'shipped', 'completed', 'cancelled'] as $status)
-                            <option value="{{ $status }}" @selected($order->status === $status)>
+                          @foreach(['pending','paid','shipped','completed','cancelled'] as $status)
+
+                            <option value="{{ $status }}"
+                              @selected($order->status === $status)>
 
                               {{ ucfirst($status) }}
 
                             </option>
+
                           @endforeach
 
                         </select>

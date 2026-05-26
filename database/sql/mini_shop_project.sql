@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 25, 2026 at 07:44 PM
+-- Generation Time: May 26, 2026 at 10:15 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -153,11 +153,10 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `order_number`, `subtotal`, `shipping`, `total`, `status`, `full_name`, `email`, `phone`, `address`, `province`, `postal_code`, `payment_method`, `created_at`, `updated_at`) VALUES
-(3, 2, 'ORD-6A12C43208F33', 831.55, 0.00, 831.55, 'pending', 'Chinnawat Prommatato', 'user@exam.com', '0908579223', 'Huai Yang4 Moo 6 Lao Phon Kho, Khok Si Suphan', 'Sakon Nakhon', '47280', 'omise', '2026-05-24 02:26:10', '2026-05-24 02:26:10'),
+(3, 2, 'ORD-6A12C43208F33', 831.55, 0.00, 831.55, 'paid', 'Chinnawat Prommatato', 'user@exam.com', '0908579223', 'Huai Yang4 Moo 6 Lao Phon Kho, Khok Si Suphan', 'Sakon Nakhon', '47280', 'omise', '2026-05-24 02:26:10', '2026-05-26 12:29:02'),
 (4, 2, 'ORD-6A12E8E4623F4', 318.99, 0.00, 318.99, 'shipped', 'Chinnawat Prommatato', 'user@exam.com', '0908579223', 'Huai Yang4 Moo 6 Lao Phon Kho, Khok Si Suphan', 'Sakon Nakhon', '47280', 'omise', '2026-05-24 12:02:44', '2026-05-24 18:38:10'),
-(5, 2, 'ORD-6A12EBD6C527F', 1081.57, 0.00, 1081.57, 'pending', 'Chinnawat Prommatato', 'user@exam.com', '0908579223', 'Huai Yang4 Moo 6 Lao Phon Kho, Khok Si Suphan', 'Sakon Nakhon', '47280', 'omise', '2026-05-24 12:15:18', '2026-05-24 12:15:18'),
-(6, 2, 'ORD-6A12EC65497B7', 101.20, 0.00, 101.20, 'completed', 'Chinnawat Prommatato', 'user@exam.com', '0908579223', 'Huai Yang4 Moo 6 Lao Phon Kho, Khok Si Suphan', 'Sakon Nakhon', '47280', 'omise', '2026-05-24 12:17:41', '2026-05-24 14:52:14'),
-(7, 3, 'ORD-6A13467C8C7FE', 835.89, 0.00, 835.89, 'pending', 'Chinnawat Prommatato', 'testcustomer@mail.com', '0908579223', 'Huai Yang4 Moo 6 Lao Phon Kho, Khok Si Suphan', 'Sakon Nakhon', '47280', 'omise', '2026-05-24 18:42:04', '2026-05-24 18:42:04');
+(5, 2, 'ORD-6A12EBD6C527F', 1081.57, 0.00, 1081.57, 'completed', 'Chinnawat Prommatato', 'user@exam.com', '0908579223', 'Huai Yang4 Moo 6 Lao Phon Kho, Khok Si Suphan', 'Sakon Nakhon', '47280', 'omise', '2026-05-24 12:15:18', '2026-05-26 12:27:13'),
+(6, 2, 'ORD-6A12EC65497B7', 101.20, 0.00, 101.20, 'completed', 'Chinnawat Prommatato', 'user@exam.com', '0908579223', 'Huai Yang4 Moo 6 Lao Phon Kho, Khok Si Suphan', 'Sakon Nakhon', '47280', 'omise', '2026-05-24 12:17:41', '2026-05-24 14:52:14');
 
 -- --------------------------------------------------------
 
@@ -188,9 +187,7 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `brand`, `name`, `ima
 (4, 4, 12, 'Xiaomi', 'A27Qi 2026', 'https://xiaomiknowledge.blob.core.windows.net/image/39b2f90f-98d1-f011-8544-000d3a0989f6.png', 159.00, 1, 159.00, '2026-05-24 12:02:44', '2026-05-24 12:02:44'),
 (5, 4, 6, 'Dell', 'S2725H', 'https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/peripherals/monitors/s-series/s2725h/pdp/monitor-s2725h-pdp-module-hero.psd?fmt=jpg&wid=3000&hei=2063', 159.99, 1, 159.99, '2026-05-24 12:02:44', '2026-05-24 12:02:44'),
 (6, 5, 17, 'Samsung', 'G8 G81SF', 'https://images.samsung.com/is/image/samsung/p6pim/th/ls27fg812sexxt/gallery/th-odyssey-oled-g8-27g81sf-ls27fg812sexxt-545517381?$1164_776_PNG$', 1081.57, 1, 1081.57, '2026-05-24 12:15:18', '2026-05-24 12:15:18'),
-(7, 6, 29, 'AOC', '24G50Z/67', 'https://ihcupload.s3.ap-southeast-1.amazonaws.com/img/product/products150542_800.jpg', 101.20, 1, 101.20, '2026-05-24 12:17:41', '2026-05-24 12:17:41'),
-(8, 7, 21, 'ASUS', 'ROG STRIX XG27ACMES', 'https://www.jib.co.th/img_master/product/original/20251129152246_81850_287_1.jpg', 235.91, 1, 235.91, '2026-05-24 18:42:04', '2026-05-24 18:42:04'),
-(9, 7, 8, 'Dell', 'S2725Q', 'https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/peripherals/monitors/s-series/s2725qs/media-gallery/monitor-s2725qs-gray-gallery-1.psd?fmt=png-alpha&pscan=auto&scl=1&hei=804&wid=893&qlt=100,1&resMode=sharp2&size=893,804&chrss=full', 299.99, 2, 599.98, '2026-05-24 18:42:04', '2026-05-24 18:42:04');
+(7, 6, 29, 'AOC', '24G50Z/67', 'https://ihcupload.s3.ap-southeast-1.amazonaws.com/img/product/products150542_800.jpg', 101.20, 1, 101.20, '2026-05-24 12:17:41', '2026-05-24 12:17:41');
 
 -- --------------------------------------------------------
 
@@ -270,7 +267,12 @@ INSERT INTO `products` (`id`, `image`, `brand`, `name`, `application`, `display_
 (27, 'https://www.jib.co.th/img_master/product/original/20260218172548_83421_477_1.jpg', 'ASUS', 'TUF GAMING VG32WQ3B', 'gaming', '32', '2560 x 1440', '180 Hz', 'VA', '16:9', '0.5', 'curved', '300cd/㎡', '8 bit', '16.7 Million Colors', '3500:1', '1 x Power cable 1 x HDMI 2.0 cable 1 x DisplayPort', '9.40', '{\"HDMI\":2,\"DisplayPort\":1}', '{\"sRGB\":100,\"DCI-P3\":90}', 710.00, 507.00, 214.00, 228.98, 'fixed', 3.06, 225.92, '2026-05-22 17:17:25', '2026-05-22 17:17:25'),
 (28, 'https://cdn.sanity.io/images/hf5b3axp/production/56cd29ee83b834007df0284eea565c318a3c1ca4-5280x4920.png?w=1920&fit=max&auto=format', 'AOC', '22B30HM2', 'business / personal', '22', '1920 x 1080', '60 Hz', 'VA', '16:9', '4', 'flat screen', '250 cd/m²', '8 bit', '16.7 Million Colors', '3000:1', '1 x Power cable 1 x HDMI cable', '3.49', '{\"HDMI\":1,\"VGA\":1}', '{\"sRGB\":80}', 493.80, 379.10, 169.90, 54.42, 'fixed', 1.22, 53.20, '2026-05-22 19:14:01', '2026-05-22 19:14:01'),
 (29, 'https://ihcupload.s3.ap-southeast-1.amazonaws.com/img/product/products150542_800.jpg', 'AOC', '24G50Z/67', 'gaming', '24', '1920 x 1080', '240 Hz', 'IPS', '16:9', '0.3', 'flat screen', '300 cd/m²', '8 bit', '16.7 Million Colors', '1000:1', '1 x Power cable 1 x HDMI cable', '4.32', '{\"HDMI\":1,\"DisplayPort\":1}', '{\"sRGB\":100,\"DCI-P3\":87}', 544.00, 418.10, 175.00, 102.42, 'fixed', 1.22, 101.20, '2026-05-23 08:44:45', '2026-05-23 08:44:45'),
-(30, 'https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/peripherals/monitors/s-series/se2425hm/media-gallery/monitor-se2425hm-black-gallery-1.psd?fmt=png-alpha&pscan=auto&scl=1&hei=804&wid=900&qlt=100,1&resMode=sharp2&size=900,804&chrss=full', 'Dell', 'SE2425HM', 'business / personal', '24', '1920 x 1080', '100 Hz', 'IPS', '16:9', '5', 'flat screen', '250 cd/m2', '8 bit', '16.7 Million Colors', '1000:1', '1 x Power cable 1 x HDMI cable', '3.46', '{\"HDMI\":1,\"DisplayPort\":1}', '{\"sRGB\":72}', 538.70, 412.20, 70.40, 99.99, 'percent', 0.00, 99.99, '2026-05-23 08:50:56', '2026-05-23 08:50:56');
+(30, 'https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/peripherals/monitors/s-series/se2425hm/media-gallery/monitor-se2425hm-black-gallery-1.psd?fmt=png-alpha&pscan=auto&scl=1&hei=804&wid=900&qlt=100,1&resMode=sharp2&size=900,804&chrss=full', 'Dell', 'SE2425HM', 'business / personal', '24', '1920 x 1080', '100 Hz', 'IPS', '16:9', '5', 'flat screen', '250 cd/m2', '8 bit', '16.7 Million Colors', '1000:1', '1 x Power cable 1 x HDMI cable', '3.46', '{\"HDMI\":1,\"DisplayPort\":1}', '{\"sRGB\":72}', 538.70, 412.20, 70.40, 99.99, 'percent', 0.00, 99.99, '2026-05-23 08:50:56', '2026-05-23 08:50:56'),
+(31, 'https://www.lg.com/content/dam/channel/wcms/th/image-update/monitor/2025/27g411a-b-atm/gallery/gallery/ultragear-gaming-27g411a-2025-gallery-gallery-01.jpg/jcr:content/renditions/thum-1600x1062.jpeg?w=800', 'LG', 'UltraGear™ 27G411A', 'gaming', '27', '1920 x 1080', '144 Hz', 'IPS', '16:9', '5', 'flat screen', '250cd/m²', '8 bit', '16.7 Million Colors', '1500:1', '1 x Power cable 1 x HDMI 2.0 cable 1 x DisplayPort', '5.3kg', '{\"HDMI\":1,\"DisplayPort\":1}', '{\"sRGB\":99}', 690.00, 141.00, 430.00, 118.58, 'percent', 0.00, 118.58, '2026-05-26 14:40:21', '2026-05-26 14:40:21'),
+(32, 'https://www.lg.com/content/dam/channel/wcms/th/image-update/monitor/2026/27g810a-b-atm/gallery/gallery/ultragear-gaming-27g810a-2025-gallery-gallery-01.jpg/jcr:content/renditions/thum-1600x1062.jpeg?w=800', 'LG', 'UltraGear™ 27G810A', 'gaming', '27', '3840 x 2160', '180 Hz', 'IPS', '16:9', '1', 'flat screen', '400cd/m²', '10 bit', '1.07 billion colors', '1000:1', '1 x Power cable 1 x HDMI 2.0 cable 1 x DisplayPort', '7.4kg', '{\"HDMI\":2,\"DisplayPort\":1}', '{\"DCI-P3\":95}', 691.00, 168.00, 523.00, 370.00, 'fixed', 25.00, 345.00, '2026-05-26 14:45:18', '2026-05-26 14:45:18'),
+(33, 'https://www.lg.com/content/dam/channel/wcms/th/image-update/monitor/2025/34g630a-b-atmq/gallery/gallery/ultragear-gaming-34g630a-2025-gallery-gallery-01.jpg/jcr:content/renditions/thum-1600x1062.jpeg?w=800', 'LG', 'UltraGear™ 34G630A-B', 'gaming', '34', '3440 x 1440', '240 Hz', 'VA', '21:9', '1', 'curved', '300cd/m²', '10 bit', '1.07 billion colors', '4000:1', '1 x Power cable 1 x HDMI 2.0 cable 1 x DisplayPort', '7.3kg', '{\"HDMI\":2,\"DisplayPort\":1,\"USB\":1}', '{\"DCI-P3\":95}', 808.00, 363.92, 107.11, 477.39, 'fixed', 47.80, 429.59, '2026-05-26 14:50:11', '2026-05-26 14:50:11'),
+(34, 'https://www.lg.com/content/dam/channel/wcms/th/image-update/monitor/2026/27gx704a-atm/gallery/gallery/2010x1334/ultragear-gaming-27gx704a-2025-gallery-gallery-00-with-logo.jpg/jcr:content/renditions/thum-1600x1062.jpeg?w=800', 'LG', 'UltraGear™ 27GX704A-B', 'gaming', '27', '2560 x 1440', '240 Hz', 'OLED', '16:9', '0.03', 'flat screen', '275cd/m²', '10 bit', '1.07 billion colors', '1500000:1', '1 x Power cable 1 x HDMI 2.0 cable 1 x DisplayPort', '7.2kg', '{\"HDMI\":1,\"DisplayPort\":2,\"USB-C\":1}', '{\"DCI-P3\":98}', 605.20, 532.60, 220.00, 575.14, 'fixed', 64.35, 510.79, '2026-05-26 15:08:42', '2026-05-26 15:08:42'),
+(35, 'https://www.lg.com/content/dam/channel/wcms/th/image-update/monitor/2026/32gx850a-atm/gallery/gallery/ultragear-gaming-32gx850a-2025-gallery-gallery-01.jpg/jcr:content/renditions/thum-1600x1062.jpeg?w=800', 'LG', 'UltraGear™ 32GX850A-B', 'gaming', '32', '3840 x 2160', '360 Hz', 'OLED', '16:9', '0.03', 'flat screen', '275cd/m²', '10 bit', '1.07 billion colors', '1500000:1', '1 x Power cable 1 x HDMI 2.0 cable 1 x DisplayPort', '7.2kg', '{\"HDMI\":1,\"DisplayPort\":2,\"USB-C\":1}', '{\"DCI-P3\":98}', 714.10, 510.90, 249.80, 915.57, 'fixed', 91.92, 823.65, '2026-05-26 15:12:16', '2026-05-26 15:12:16');
 
 -- --------------------------------------------------------
 
@@ -301,9 +303,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `password`, `role`, `address`, `province`, `postal_code`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'AlekZus', NULL, NULL, 'admin@exam.com', NULL, NULL, '$2y$12$e4IkkFNtLkGAVwtjBbuxGuhlQIn8KiuZvbwiCQIzlObxwvoPSTWnu', 'admin', NULL, NULL, NULL, 'sPKGbrXVyBOrjYbV9NTdV4mGEAY8RgBEihA3BY9Gbhhs7vU7MijRxVL37hgv', '2026-05-18 13:46:41', '2026-05-18 13:46:41'),
-(2, 'Chinnawat Prommatato', 'Chinnawat', 'Prommatato', 'user@exam.com', '0908579223', NULL, '$2y$12$YiWgH4bSFeUEPV0AD.70q.YFxuOyLGdsJNH7nbEH0gsLZNtPDxO8O', 'consumer', 'Huai Yang\r\n4 Moo 6 Lao Phon Kho, Khok Si Suphan', 'Sakon Nakhon', '47280', NULL, '2026-05-20 10:01:40', '2026-05-23 14:28:05'),
-(3, 'Test Customer', NULL, NULL, 'testcustomer@mail.com', NULL, NULL, '$2y$12$XErLUWteu3Td/eWMfuneHOusi.QkyJTTstDor3KMh9L9jITWcjiWW', 'consumer', NULL, NULL, NULL, NULL, '2026-05-24 18:40:26', '2026-05-24 18:40:26');
+(1, 'AlekZus', NULL, NULL, 'admin@exam.com', NULL, NULL, '$2y$12$e4IkkFNtLkGAVwtjBbuxGuhlQIn8KiuZvbwiCQIzlObxwvoPSTWnu', 'admin', NULL, NULL, NULL, 'iyut8k4lE3UuGpl77UYTstwE0cz6Wj3z4JIJQEFUfPuX8LafbIMcW5nbmxCA', '2026-05-18 13:46:41', '2026-05-18 13:46:41'),
+(2, 'Chinnawat Prommatato', 'Chinnawat', 'Prommatato', 'user@exam.com', '0908579223', NULL, '$2y$12$YiWgH4bSFeUEPV0AD.70q.YFxuOyLGdsJNH7nbEH0gsLZNtPDxO8O', 'consumer', 'Huai Yang\r\n4 Moo 6 Lao Phon Kho, Khok Si Suphan', 'Sakon Nakhon', '47280', NULL, '2026-05-20 10:01:40', '2026-05-23 14:28:05');
 
 --
 -- Indexes for dumped tables
@@ -422,7 +423,7 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `users`

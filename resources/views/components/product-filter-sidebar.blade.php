@@ -43,7 +43,17 @@
               <span
                 class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-300 text-blue-700 text-xs font-bold rounded-lg">
                 {{ $tagLabel }}
-                <a href="{{ removeFilterUrl($key, $value) }}" class="text-blue-700 hover:text-black">
+                <a href="{{ route(
+                    'products.index',
+                    collect(request()->query())->map(function ($item, $queryKey) use ($key, $value) {
+                            if ($queryKey !== $key) {
+                                return $item;
+                            }
+                
+                            return array_values(array_filter((array) $item, fn($v) => $v != $value));
+                        })->filter(fn($v) => !empty($v))->toArray(),
+                ) }}"
+                  class="text-blue-700 hover:text-black">
                   ×
                 </a>
               </span>

@@ -18,24 +18,6 @@
           </p>
         </div>
 
-        <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST"
-          class="flex items-center gap-3">
-          @csrf
-          @method('PATCH')
-
-          <select name="status"
-            class="rounded-2xl border-neutral-300 text-sm font-bold">
-            @foreach(['pending','paid','shipped','completed','cancelled'] as $status)
-              <option value="{{ $status }}" @selected($order->status === $status)>
-                {{ ucfirst($status) }}
-              </option>
-            @endforeach
-          </select>
-
-          <button class="px-5 py-3 bg-black text-white rounded-2xl text-sm font-black">
-            Update Status
-          </button>
-        </form>
       </div>
 
       @if(session('success'))
