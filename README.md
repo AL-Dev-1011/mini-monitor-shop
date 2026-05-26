@@ -75,6 +75,11 @@ This project includes a SQL backup file:
 
 ```txt
 database/sql/mini_shop_project.sql
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> f55fb7776db312c7833304a0f30bb0d09c11b427
+>>>>>>> fe75875a88a2c33376995803462ba5cc1516f905
 
 # Installation
 
