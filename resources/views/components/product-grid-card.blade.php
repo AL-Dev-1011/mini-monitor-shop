@@ -1,12 +1,11 @@
 @php
-  $hasDiscount = $product->discount > 0;
-
   $finalPrice = $product->discounted_price ?? $product->price;
+  $hasDiscount = $finalPrice < $product->price;
 
-  $discountPercent = 0;
+  $resolutionLabel = '-';
 
-  if ($hasDiscount && $product->price > 0) {
-      $discountPercent = round((($product->price - $finalPrice) / $product->price) * 100);
+  if (!empty($product->resolution)) {
+      $resolutionLabel = $filters['resolution'][$product->resolution] ?? $product->resolution;
   }
 
   $isAdmin = auth()->check() && auth()->user()->role === 'admin';
