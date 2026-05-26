@@ -8,6 +8,20 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
+      @if ($errors->any())
+        <div class="mb-6 rounded-2xl bg-red-50 border border-red-200 p-4 text-red-700">
+          <p class="font-black mb-2">
+            Please check required fields:
+          </p>
+
+          <ul class="list-disc list-inside text-sm">
+            @foreach ($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
+
       {{-- Product Form (Left Layout) --}}
       <form action="{{ route('products.store') }}" method="POST" id="product-form"
         class="lg:col-span-7 xl:col-span-8 space-y-6">
@@ -36,15 +50,15 @@
 
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Monitor Name</label>
-              <input type="text" name="name" placeholder="e.g. UltraSharp U2723QE"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <input type="text" name="name" placeholder="UltraSharp U2723QE"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition" required>
             </div>
           </div>
 
           <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Image URL</label>
             <input type="text" name="image" placeholder="https://example.com/image.jpg"
-              class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition" required>
           </div>
         </div>
 
@@ -63,9 +77,9 @@
                 <option>5120 x 1440</option>
                 <option>3840 x 2160</option>
                 <option>3440 x 1440</option>
-                <option>2560 x 1600</option> 
+                <option>2560 x 1600</option>
                 <option>2560 x 1440</option>
-                <option>1920 x 1200</option> 
+                <option>1920 x 1200</option>
                 <option>1920 x 1080</option>
 
               </select>
@@ -115,8 +129,8 @@
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Display Size
                 (Inches)</label>
-              <input type="text" name="display_size" placeholder="e.g. 24, 27, 34.5"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <input type="text" name="display_size" placeholder="24, 27, 34.5"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition" required>
             </div>
 
             <div>
@@ -132,8 +146,8 @@
 
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Response Time</label>
-              <input type="text" name="response_time" placeholder="e.g. 1, 0.5, 4"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <input type="text" name="response_time" placeholder=" 1, 0.5, 4"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition" required>
             </div>
           </div>
 
@@ -150,34 +164,52 @@
 
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Brightness</label>
-              <input type="text" name="brightness" placeholder="e.g. 400 nits"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <input type="text" name="brightness" placeholder="400 nits or 400 cd/m²"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition" required>
             </div>
 
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Color Bit</label>
-              <input type="text" name="color_bit" placeholder="e.g. 10-bit"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">
+                Color Bit
+              </label>
+
+              <select name="color_bit" id="color_bit"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+
+                <option value="">Select color bit</option>
+
+                <option value="8-bit" @selected(old('color_bit', $product->color_bit ?? '') === '8-bit')>
+                  8-bit
+                </option>
+
+                <option value="10-bit" @selected(old('color_bit', $product->color_bit ?? '') === '10-bit')>
+                  10-bit
+                </option>
+              </select>
             </div>
 
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Color Depth</label>
-              <input type="text" name="color_depth" placeholder="e.g. 1.07 billion colors"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">
+                Color Depth
+              </label>
+
+              <input type="text" name="color_depth" id="color_depth"
+                value="{{ old('color_depth', $product->color_depth ?? '') }}" readonly
+                class="w-full rounded-2xl border-gray-200 bg-gray-100 py-3 px-4">
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Contrast Ratio</label>
-              <input type="text" name="contrast_ratio" placeholder="e.g. 1000:1"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <input type="text" name="contrast_ratio" placeholder="1000:1"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition" required>
             </div>
 
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Weight</label>
-              <input type="text" name="weight" placeholder="e.g. 6.2 kg"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <input type="text" name="weight" placeholder="6.2 kg"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition" required>
             </div>
           </div>
 
@@ -241,21 +273,21 @@
           </h2>
           <div class="grid grid-cols-3 gap-4">
             <div>
-              <input type="number" step="0.01" name="dimension_width" placeholder="Width (cm)"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <input type="number" step="0.01" name="dimension_width" placeholder="Width (mm)"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition" required>
             </div>
             <div>
-              <input type="number" step="0.01" name="dimension_height" placeholder="Height (cm)"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <input type="number" step="0.01" name="dimension_height" placeholder="Height (mm)"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition" required>
             </div>
             <div>
-              <input type="number" step="0.01" name="dimension_depth" placeholder="Depth (cm)"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+              <input type="number" step="0.01" name="dimension_depth" placeholder="Depth (mm)"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition" required>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6">
+        {{-- <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6">
           <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
             <span class="w-2 h-6 bg-blue-600 rounded-full"></span>
             Pricing & Discounts
@@ -277,6 +309,41 @@
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Discount Value</label>
               <input type="number" step="0.01" name="discount" placeholder="0"
                 class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+            </div>
+          </div>
+        </div> --}}
+
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6">
+          <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <span class="w-2 h-6 bg-blue-600 rounded-full"></span>
+            Pricing & Discounts
+          </h2>
+
+          <input type="hidden" name="discount_type" value="fixed">
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">
+                Base Price ($) <span class="text-red-500">*</span>
+              </label>
+
+              <input type="number" step="0.01" min="0" name="price"
+                value="{{ old('price', $product->price ?? '') }}" placeholder="0.00" required
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">
+                Discount Amount ($)
+              </label>
+
+              <input type="number" step="0.01" min="0" name="discount"
+                value="{{ old('discount', $product->discount ?? 0) }}" placeholder="Example: 50"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+
+              <p class="mt-2 text-xs text-gray-400 font-semibold">
+                Fixed discount only. Example: 50 = $50 off.
+              </p>
             </div>
           </div>
         </div>
@@ -318,7 +385,7 @@
 
               <div class="flex flex-wrap items-baseline gap-x-1.5 text-xl font-extrabold text-gray-900 line-clamp-1">
                 <span id="preview-size-text">24"</span>
-                <span id="preview-brand-text">Dell</span>
+                {{-- <span id="preview-brand-text">Dell</span> --}}
                 <span id="preview-name">U2426G</span>
               </div>
             </div>
@@ -342,11 +409,11 @@
                   <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider">Panel Type</span>
                   <span id="preview-panel" class="text-sm font-bold text-gray-800 block mt-0.5 truncate">-</span>
                 </div>
-                <div class="col-span-2 border-l-2 border-blue-500 bg-blue-50/40 p-2.5 rounded-r-xl">
+                {{-- <div class="col-span-2 border-l-2 border-blue-500 bg-blue-50/40 p-2.5 rounded-r-xl">
                   <span class="block text-[10px] text-blue-600 font-bold uppercase tracking-wider">Color Gamut</span>
                   <span id="preview-color-gamut"
                     class="text-sm font-extrabold text-gray-800 block mt-0.5 truncate">-</span>
-                </div>
+                </div> --}}
               </div>
             </div>
 

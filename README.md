@@ -6,10 +6,6 @@ Mini ecommerce web application built with Laravel + Tailwind CSS.
 
 This project is a mini ecommerce system focused on monitor products.
 
-Users can browse products, filter monitors by specifications, add products to cart, checkout orders, and view order history.
-
-Admins can manage products, manage customer orders, and view dashboard summaries.
-
 ---
 
 # Features
@@ -61,30 +57,18 @@ Admins can manage products, manage customer orders, and view dashboard summaries
 
 # Tech Stack
 
-- Laravel
-- Blade Template Engine
+- Laravel 12
+- PHP 8.2
 - Tailwind CSS
 - MySQL
+- Blade Components
 - XAMPP
 
 ---
-<<<<<<< HEAD
+
 ## Database
 
 This project includes a SQL backup file:
 
 ```txt
 database/sql/mini_shop_project.sql
-<<<<<<< HEAD
-=======
-=======
->>>>>>> f55fb7776db312c7833304a0f30bb0d09c11b427
->>>>>>> fe75875a88a2c33376995803462ba5cc1516f905
-
-# Installation
-
-## Clone Project
-
-```bash
-git clone https://github.com/AL-Dev-1011/mini-monitor-shop.git
-cd mini-monitor-shop

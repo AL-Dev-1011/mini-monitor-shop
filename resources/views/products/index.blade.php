@@ -24,9 +24,9 @@
                   Monitor Products
                 </h1>
 
-                <p class="mt-1 text-sm font-bold text-neutral-500">
+                {{-- <p class="mt-1 text-sm font-bold text-neutral-500">
                   {{ $products->total() }} Results
-                </p>
+                </p> --}}
               </div>
 
               {{-- View Toggle and Sort --}}

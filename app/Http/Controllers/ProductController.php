@@ -209,7 +209,7 @@ class ProductController extends Controller {
 
     //  PAGINATION
     $products = $query
-      ->paginate(28)
+      ->paginate(24)
       ->withQueryString();
 
     // FILTER COUNTS
@@ -351,7 +351,7 @@ class ProductController extends Controller {
       'dimension_height' => ['nullable', 'numeric'],
       'dimension_depth'  => ['nullable', 'numeric'],
       'price'            => ['required', 'numeric', 'min:0'],
-      'discount_type'    => ['nullable', 'in:percent,fixed'],
+      'discount_type'    => ['nullable', 'in:fixed'],
       'discount'         => ['nullable', 'numeric', 'min:0'],
     ]);
   }
@@ -369,33 +369,20 @@ class ProductController extends Controller {
     $data['color_gamuts'] = $this->prepareColorGamuts($request);
 
     // DISCOUNT CALCULATION
-    $price = (float) $request->input('price', 0);
-
-    $discount = (float) $request->input('discount', 0);
-
-    $discountType = $request->input('discount_type', 'percent');
+    $price        = (float) $request->input('price', 0);
+    $discount     = (float) $request->input('discount', 0);
+    $discountType = 'fixed';
 
     if ($discount <= 0) {
-
-      $discount = 0;
-
+      $discount        = 0;
       $discountedPrice = $price;
-
-    } elseif ($discountType === 'percent') {
-
-      $discountedPrice = $price - ($price * $discount / 100);
-
     } else {
-
       $discountedPrice = max(0, $price - $discount);
     }
 
-    $data['price'] = $price;
-
-    $data['discount'] = $discount;
-
-    $data['discount_type'] = $discountType;
-
+    $data['price']            = $price;
+    $data['discount']         = $discount;
+    $data['discount_type']    = $discountType;
     $data['discounted_price'] = $discountedPrice;
 
     return $data;

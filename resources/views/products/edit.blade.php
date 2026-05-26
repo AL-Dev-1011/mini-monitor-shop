@@ -5,7 +5,18 @@
 
     $brands = ['Dell', 'LG', 'Samsung', 'ASUS', 'AOC', 'Acer', 'MSI', 'Gigabyte', 'ViewSonic', 'Xiaomi'];
     $applications = ['business / personal', 'color grading', 'gaming', 'dual mode'];
-    $resolutions = ['6144 x 2560','5120 x 1440','3840 x 2160','3840 x 1080','3440 x 1440','2560 x 1600','2560 x 1440','2560 x 1080','1920 x 1200','1920 x 1080',];
+    $resolutions = [
+        '6144 x 2560',
+        '5120 x 1440',
+        '3840 x 2160',
+        '3840 x 1080',
+        '3440 x 1440',
+        '2560 x 1600',
+        '2560 x 1440',
+        '2560 x 1080',
+        '1920 x 1200',
+        '1920 x 1080',
+    ];
     $refreshRates = ['500 Hz', '360 Hz', '290 Hz', '240 Hz', '180 Hz', '144 Hz', '120 Hz', '100 Hz', '60 Hz'];
     $panelTypes = ['OLED', 'IPS', 'IPS Black', 'TN', 'VA'];
     $aspectRatios = ['16:9', '16:10', '21:9', '32:9'];
@@ -30,6 +41,19 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      @if ($errors->any())
+        <div class="mb-6 rounded-2xl bg-red-50 border border-red-200 p-4 text-red-700">
+          <p class="font-black mb-2">
+            Please check required fields:
+          </p>
+
+          <ul class="list-disc list-inside text-sm">
+            @foreach ($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
 
       <form action="{{ route('products.update', $product) }}" method="POST" id="product-form"
         class="lg:col-span-7 xl:col-span-8 space-y-6">
@@ -58,14 +82,14 @@
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Monitor Name</label>
               <input type="text" name="name" value="{{ old('name', $product->name) }}"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4" required>
             </div>
           </div>
 
           <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Image URL</label>
             <input type="text" name="image" value="{{ old('image', $product->image) }}"
-              class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+              class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4" required>
           </div>
         </div>
 
@@ -128,8 +152,8 @@
                 Display Size
               </label>
               <input type="text" name="display_size" value="{{ old('display_size', $product->display_size) }}"
-                placeholder="e.g. 24, 27, 34.5"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+                placeholder="e.g. 24, 27, 34.5" class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4"
+                required>
             </div>
 
             <div>
@@ -146,14 +170,14 @@
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Response Time</label>
               <input type="text" name="response_time" value="{{ old('response_time', $product->response_time) }}"
-                placeholder="e.g. 1 ms"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+                placeholder="e.g. 1 ms" class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4" required>
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Screen Curvature</label>
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Screen
+                Curvature</label>
               <select name="screen_curvature" class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
                 @foreach ($curvatures as $curvature)
                   <option value="{{ $curvature }}" @selected(old('screen_curvature', $product->screen_curvature) === $curvature)>
@@ -166,36 +190,60 @@
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Brightness</label>
               <input type="text" name="brightness" value="{{ old('brightness', $product->brightness) }}"
-                placeholder="e.g. 400 nits"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+                placeholder="e.g. 400 nits" class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4" required>
             </div>
 
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Color Bit</label>
-              <input type="text" name="color_bit" value="{{ old('color_bit', $product->color_bit) }}"
-                placeholder="e.g. 10-bit"
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">
+                Color Bit
+              </label>
+
+              @php
+                $currentColorBit = old('color_bit', $product->color_bit ?? '');
+
+                $normalizedColorBit = match (strtolower(str_replace(' ', '', $currentColorBit))) {
+                    '8bit' => '8-bit',
+                    '10bit' => '10-bit',
+                    default => $currentColorBit,
+                };
+              @endphp
+
+              <select name="color_bit" id="color_bit"
                 class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+
+                <option value="">Select color bit</option>
+
+                <option value="8-bit" @selected($normalizedColorBit === '8-bit')>
+                  8-bit
+                </option>
+
+                <option value="10-bit" @selected($normalizedColorBit === '10-bit')>
+                  10-bit
+                </option>
+
+              </select>
             </div>
 
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Color Depth</label>
-              <input type="text" name="color_depth" value="{{ old('color_depth', $product->color_depth) }}"
-                placeholder="e.g. 1.07 billion colors"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">
+                Color Depth
+              </label>
+
+              <input type="text" name="color_depth" id="color_depth"
+                value="{{ old('color_depth', $product->color_depth ?? '') }}" readonly
+                class="w-full rounded-2xl border-gray-200 bg-gray-100 py-3 px-4" required>
             </div>
 
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Contrast Ratio</label>
               <input type="text" name="contrast_ratio" value="{{ old('contrast_ratio', $product->contrast_ratio) }}"
-                placeholder="e.g. 1000:1"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+                placeholder="e.g. 1000:1" class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4" required>
             </div>
 
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Weight</label>
               <input type="text" name="weight" value="{{ old('weight', $product->weight) }}"
-                placeholder="e.g. 6.2 kg"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+                placeholder="e.g. 6.2 kg" class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4" required>
             </div>
           </div>
 
@@ -219,8 +267,7 @@
             @foreach (['HDMI', 'DisplayPort', 'USB-C', 'Thunderbolt', 'VGA', 'USB', 'RJ45'] as $port)
               <div class="flex items-center justify-between border border-gray-100 rounded-2xl p-4 bg-gray-50/30">
                 <div class="flex items-center gap-3">
-                  <input type="checkbox" name="connection_enable_{{ $port }}"
-                    @checked(isset($connections[$port]))
+                  <input type="checkbox" name="connection_enable_{{ $port }}" @checked(isset($connections[$port]))
                     class="rounded text-blue-600 border-gray-300 w-5 h-5">
 
                   <span class="font-semibold text-sm text-gray-700">
@@ -245,15 +292,14 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             @foreach ([
-              'sRGB' => 'sRGB',
-              'Adobe_RGB' => 'Adobe RGB',
-              'DCI_P3' => 'DCI-P3',
-              'Rec_2020_BT_2020' => 'Rec. 2020 / BT. 2020',
-            ] as $formKey => $dbKey)
+        'sRGB' => 'sRGB',
+        'Adobe_RGB' => 'Adobe RGB',
+        'DCI_P3' => 'DCI-P3',
+        'Rec_2020_BT_2020' => 'Rec. 2020 / BT. 2020',
+    ] as $formKey => $dbKey)
               <div class="flex flex-col gap-3 border border-gray-100 rounded-2xl p-4 bg-gray-50/30">
                 <div class="flex items-center gap-3">
-                  <input type="checkbox" name="gamut_enable_{{ $formKey }}"
-                    @checked(isset($gamuts[$dbKey]))
+                  <input type="checkbox" name="gamut_enable_{{ $formKey }}" @checked(isset($gamuts[$dbKey]))
                     class="rounded text-blue-600 border-gray-300 w-5 h-5">
 
                   <span class="font-semibold text-xs text-gray-700 truncate">
@@ -262,8 +308,7 @@
                 </div>
 
                 <div class="relative mt-1">
-                  <input type="number" min="0" max="100"
-                    name="gamut_percent_{{ $formKey }}"
+                  <input type="number" min="0" max="100" name="gamut_percent_{{ $formKey }}"
                     value="{{ old('gamut_percent_' . $formKey, $gamuts[$dbKey] ?? '') }}"
                     class="w-full rounded-xl border-gray-200 pr-8 py-1.5 text-sm">
 
@@ -283,19 +328,16 @@
 
           <div class="grid grid-cols-3 gap-4">
             <input type="number" step="0.01" name="dimension_width"
-              value="{{ old('dimension_width', $product->dimension_width) }}"
-              placeholder="Width (cm)"
-              class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+              value="{{ old('dimension_width', $product->dimension_width) }}" placeholder="Width (cm)"
+              class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4" required>
 
             <input type="number" step="0.01" name="dimension_height"
-              value="{{ old('dimension_height', $product->dimension_height) }}"
-              placeholder="Height (cm)"
-              class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+              value="{{ old('dimension_height', $product->dimension_height) }}" placeholder="Height (cm)"
+              class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4" required>
 
             <input type="number" step="0.01" name="dimension_depth"
-              value="{{ old('dimension_depth', $product->dimension_depth) }}"
-              placeholder="Depth (cm)"
-              class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+              value="{{ old('dimension_depth', $product->dimension_depth) }}" placeholder="Depth (cm)"
+              class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4" required>
           </div>
         </div>
 
@@ -306,30 +348,31 @@
             Pricing & Discounts
           </h2>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <input type="hidden" name="discount_type" value="fixed">
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Base Price ($)</label>
-              <input type="number" step="0.01" name="price" value="{{ old('price', $product->price) }}"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">
+                Base Price ($) <span class="text-red-500">*</span>
+              </label>
+
+              <input type="number" step="0.01" min="0" name="price"
+                value="{{ old('price', $product->price ?? '') }}" placeholder="0.00" required
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
             </div>
 
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Discount Type</label>
-              <select name="discount_type" class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
-                <option value="percent" @selected(old('discount_type', $product->discount_type) === 'percent')>
-                  Percent (%)
-                </option>
-                <option value="fixed" @selected(old('discount_type', $product->discount_type) === 'fixed')>
-                  Fixed Amount ($)
-                </option>
-              </select>
-            </div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">
+                Discount Amount ($)
+              </label>
 
-            <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Discount Value</label>
-              <input type="number" step="0.01" name="discount" value="{{ old('discount', $product->discount) }}"
-                placeholder="0"
-                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 py-3 px-4">
+              <input type="number" step="0.01" min="0" name="discount"
+                value="{{ old('discount', $product->discount ?? 0) }}" placeholder="Example: 50"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition">
+
+              <p class="mt-2 text-xs text-gray-400 font-semibold">
+                Fixed discount only. Example: 50 = $50 off.
+              </p>
             </div>
           </div>
         </div>
@@ -399,10 +442,10 @@
                   <span id="preview-panel" class="text-sm font-bold text-gray-800">-</span>
                 </div>
 
-                <div class="col-span-2 border-l-2 border-blue-500 bg-blue-50/40 p-2.5 rounded-r-xl">
+                {{-- <div class="col-span-2 border-l-2 border-blue-500 bg-blue-50/40 p-2.5 rounded-r-xl">
                   <span class="block text-[10px] text-blue-600 font-bold uppercase">Color Gamut</span>
                   <span id="preview-color-gamut" class="text-sm font-extrabold text-gray-800">-</span>
-                </div>
+                </div> --}}
               </div>
             </div>
 
@@ -424,21 +467,66 @@
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-sm">
               <tbody class="divide-y divide-gray-100">
-                <tr><td class="p-4 font-bold text-gray-600">Brand</td><td id="table-brand" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Monitor Name</td><td id="table-name" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Display Size</td><td id="table-display-size" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Resolution</td><td id="table-resolution" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Refresh Rate</td><td id="table-refresh" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Panel Type</td><td id="table-panel" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Aspect Ratio</td><td id="table-aspect-ratio" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Response Time</td><td id="table-response-time" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Screen Curvature</td><td id="table-curvature" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Brightness</td><td id="table-brightness" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Display Color</td><td id="table-color" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Connectivity</td><td id="table-connectivity" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Color Gamut</td><td id="table-gamut" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Dimension</td><td id="table-dimension" class="p-4">-</td></tr>
-                <tr><td class="p-4 font-bold text-gray-600">Accessory</td><td id="table-accessory" class="p-4">-</td></tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Brand</td>
+                  <td id="table-brand" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Monitor Name</td>
+                  <td id="table-name" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Display Size</td>
+                  <td id="table-display-size" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Resolution</td>
+                  <td id="table-resolution" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Refresh Rate</td>
+                  <td id="table-refresh" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Panel Type</td>
+                  <td id="table-panel" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Aspect Ratio</td>
+                  <td id="table-aspect-ratio" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Response Time</td>
+                  <td id="table-response-time" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Screen Curvature</td>
+                  <td id="table-curvature" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Brightness</td>
+                  <td id="table-brightness" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Display Color</td>
+                  <td id="table-color" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Connectivity</td>
+                  <td id="table-connectivity" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Color Gamut</td>
+                  <td id="table-gamut" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Dimension</td>
+                  <td id="table-dimension" class="p-4">-</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-gray-600">Accessory</td>
+                  <td id="table-accessory" class="p-4">-</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -448,129 +536,5 @@
     </div>
   </div>
 
-  <script>
-    const form = document.getElementById("product-form");
-
-    function updatePreview() {
-      const formData = new FormData(form);
-      const data = {};
-
-      for (let [key, value] of formData.entries()) {
-        data[key] = value;
-      }
-
-      form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
-        data[checkbox.name] = checkbox.checked;
-      });
-
-      document.getElementById("preview-brand").innerText = data.brand || "BRAND";
-      document.getElementById("preview-application").innerText = data.application || "business / personal";
-
-      document.getElementById("preview-size-text").innerText =
-        data.display_size && data.display_size.trim() !== ""
-          ? data.display_size.trim() + '"'
-          : "Monitor size";
-
-      document.getElementById("preview-brand-text").innerText = data.brand || "Monitor brand";
-      document.getElementById("preview-name").innerText = data.name || "Monitor name";
-      document.getElementById("preview-resolution").innerText = data.resolution || "-";
-      document.getElementById("preview-refresh").innerText = data.refresh_rate || "-";
-      document.getElementById("preview-aspect-ratio").innerText = data.aspect_ratio || "-";
-      document.getElementById("preview-panel").innerText = data.panel_type || "-";
-
-      const gamutKeys = ["sRGB", "Adobe_RGB", "DCI_P3", "Rec_2020_BT_2020"];
-      let activeGamuts = [];
-
-      gamutKeys.forEach((gamut) => {
-        if (data[`gamut_enable_${gamut}`]) {
-          const percent = data[`gamut_percent_${gamut}`] || "";
-          const label = gamut
-            .replace("Adobe_RGB", "Adobe RGB")
-            .replace("DCI_P3", "DCI-P3")
-            .replace("Rec_2020_BT_2020", "Rec. 2020 / BT. 2020");
-
-          activeGamuts.push(`${percent ? percent + "% " : ""}${label}`);
-        }
-      });
-
-      document.getElementById("preview-color-gamut").innerText = activeGamuts.join(" / ") || "-";
-
-      const imgPreview = document.getElementById("preview-image");
-      imgPreview.src = data.image && data.image.trim() !== ""
-        ? data.image
-        : "https://placehold.co/600x400/f3f4f6/a3a3a3?text=No+Image";
-
-      const basePrice = parseFloat(data.price) || 0;
-      const discountVal = parseFloat(data.discount) || 0;
-      const discountType = data.discount_type;
-      let finalPrice = basePrice;
-
-      const discountBadge = document.getElementById("preview-discount");
-      const originalPriceSpan = document.getElementById("preview-original-price");
-
-      if (discountVal > 0 && basePrice > 0) {
-        discountBadge.classList.remove("hidden");
-        originalPriceSpan.classList.remove("hidden");
-        originalPriceSpan.innerText = "$" + basePrice.toFixed(2);
-
-        if (discountType === "percent") {
-          discountBadge.innerText = `-${discountVal}%`;
-          finalPrice = basePrice - basePrice * (discountVal / 100);
-        } else {
-          discountBadge.innerText = `-$${discountVal}`;
-          finalPrice = Math.max(0, basePrice - discountVal);
-        }
-      } else {
-        discountBadge.classList.add("hidden");
-        originalPriceSpan.classList.add("hidden");
-      }
-
-      document.getElementById("preview-price").innerText = "$" + finalPrice.toFixed(2);
-
-      document.getElementById("table-brand").innerText = data.brand || "-";
-      document.getElementById("table-name").innerText = data.name || "-";
-      document.getElementById("table-display-size").innerText =
-        data.display_size ? data.display_size + '"' : "-";
-      document.getElementById("table-resolution").innerText = data.resolution || "-";
-      document.getElementById("table-refresh").innerText = data.refresh_rate || "-";
-      document.getElementById("table-panel").innerText = data.panel_type || "-";
-      document.getElementById("table-aspect-ratio").innerText = data.aspect_ratio || "-";
-      document.getElementById("table-response-time").innerText = data.response_time || "-";
-      document.getElementById("table-curvature").innerText = data.screen_curvature || "-";
-      document.getElementById("table-brightness").innerText = data.brightness || "-";
-
-      let colorText = [];
-      if (data.color_bit) colorText.push(data.color_bit);
-      if (data.color_depth) colorText.push(data.color_depth);
-      document.getElementById("table-color").innerText = colorText.join(" / ") || "-";
-
-      const ports = ["HDMI", "DisplayPort", "USB-C", "Thunderbolt", "VGA", "USB", "RJ45"];
-      let connectionHTML = "";
-
-      ports.forEach((port) => {
-        if (data[`connection_enable_${port}`]) {
-          const count = data[`connection_count_${port}`] || 1;
-          connectionHTML += `<div>${count} x ${port}</div>`;
-        }
-      });
-
-      document.getElementById("table-connectivity").innerHTML = connectionHTML || "-";
-      document.getElementById("table-gamut").innerText = activeGamuts.join(", ") || "-";
-
-      if (data.dimension_width || data.dimension_height || data.dimension_depth) {
-        const w = data.dimension_width || "0";
-        const h = data.dimension_height || "0";
-        const d = data.dimension_depth || "0";
-        document.getElementById("table-dimension").innerText = `${w} x ${h} x ${d} cm`;
-      } else {
-        document.getElementById("table-dimension").innerText = "-";
-      }
-
-      document.getElementById("table-accessory").innerText = data.accessory_in_box || "-";
-    }
-
-    form.addEventListener("input", updatePreview);
-    form.addEventListener("change", updatePreview);
-    window.addEventListener("DOMContentLoaded", updatePreview);
-  </script>
+  @vite(['resources/js/product.js'])
 </x-app-layout>
