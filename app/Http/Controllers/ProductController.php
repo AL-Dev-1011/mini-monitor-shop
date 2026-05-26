@@ -3,19 +3,113 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller {
-  private function checkAdmin() {
-    if (! Auth::check() || Auth::user()->role !== 'admin') {
-      abort(403);
-    }
-  }
+
+  //  FILTER CONFIG
+  private array $filters = [
+
+    'brand'         => [
+      'Dell',
+      'LG',
+      'Samsung',
+      'ASUS',
+      'AOC',
+      'Acer',
+      'MSI',
+      'Gigabyte',
+      'ViewSonic',
+      'Xiaomi',
+    ],
+
+    'application'   => [
+      'business / personal',
+      'color grading',
+      'gaming',
+    ],
+
+    'display_size'  => [
+      'less 24',
+      '25 - 27',
+      '30 - 32',
+      '32 more',
+    ],
+
+    'resolution'    => [
+      '6144 x 2560' => '6K UW (6144 x 2560)',
+      '5120 x 1440' => 'DQHD (5120 x 1440)',
+      '3840 x 2160' => 'UHD 4K (3840 x 2160)',
+      '3840 x 1080' => 'DFHD (3840 x 1080)',
+      '3440 x 1440' => 'UWQHD (3440 x 1440)',
+      '2560 x 1600' => 'WQXGA (2560 x 1600)',
+      '2560 x 1440' => 'QHD (2560 x 1440)',
+      '2560 x 1080' => 'WFHD (2560 x 1080)',
+      '1920 x 1200' => 'WUXGA (1920 x 1200)',
+      '1920 x 1080' => 'FHD (1920 x 1080)',
+    ],
+
+    'refresh_rate'  => [
+      '500 Hz',
+      '360 Hz',
+      '290 Hz',
+      '240 Hz',
+      '180 Hz',
+      '144 Hz',
+      '120 Hz',
+      '100 Hz',
+      '60 Hz',
+    ],
+
+    'panel_type'    => [
+      'OLED',
+      'IPS',
+      'TN',
+      'VA',
+    ],
+
+    'aspect_ratio'  => [
+      '16:9',
+      '16:10',
+      '21:9',
+      '32:9',
+    ],
+
+    'response_time' => [
+      '1 ms or less',
+      '2 - 4 ms',
+      '5 ms more',
+    ],
+  ];
+
+  // CONNECTION TYPES
+  private array $connections = [
+    'HDMI',
+    'DisplayPort',
+    'USB-C',
+    'Thunderbolt',
+    'VGA',
+    'USB',
+    'RJ45',
+  ];
+
+  // PRICE RANGES
+  private array $priceRanges = [
+    '61-80'    => '$61 - $80',
+    '81-100'   => '$81 - $100',
+    '101-200'  => '$101 - $200',
+    '201-400'  => '$201 - $400',
+    '401-600'  => '$401 - $600',
+    '601-more' => '$601 - more',
+  ];
+
+  // --------------------------------------------------------------------------
+  // PRODUCT LIST PAGE
+  // --------------------------------------------------------------------------
 
   public function index(Request $request) {
-    $products = Product::query();
+    $query = Product::query();
 
-    // normal filters
+    // BASIC FILTERS
     foreach ([
       'brand',
       'application',
@@ -24,112 +118,139 @@ class ProductController extends Controller {
       'panel_type',
       'aspect_ratio',
     ] as $field) {
+
       if ($request->filled($field)) {
-        $products->whereIn($field, (array) $request->input($field));
+        $query->whereIn($field, (array) $request->input($field));
       }
     }
 
-    // display size filter
+    // DISPLAY SIZE FILTER
     if ($request->filled('display_size')) {
-      $products->where(function ($query) use ($request) {
+      $query->where(function ($q) use ($request) {
         foreach ((array) $request->display_size as $range) {
-          $query->orWhere(function ($subQuery) use ($range) {
+          $q->orWhere(function ($sub) use ($range) {
             if ($range === 'less 24') {
-              $subQuery->whereRaw('CAST(display_size AS DECIMAL(10,2)) <= 24');
+              $sub->whereRaw('CAST(display_size AS DECIMAL(10,2)) <= 24');
             }
-
-            if ($range === '23 - 24') {
-              $subQuery->whereRaw('CAST(display_size AS DECIMAL(10,2)) BETWEEN 23 AND 24');
-            }
-
             if ($range === '25 - 27') {
-              $subQuery->whereRaw('CAST(display_size AS DECIMAL(10,2)) BETWEEN 25 AND 27');
+              $sub->whereRaw('CAST(display_size AS DECIMAL(10,2)) BETWEEN 25 AND 27');
             }
             if ($range === '30 - 32') {
-              $subQuery->whereRaw('CAST(display_size AS DECIMAL(10,2)) BETWEEN 30 AND 32');
+              $sub->whereRaw('CAST(display_size AS DECIMAL(10,2)) BETWEEN 30 AND 32');
             }
-
             if ($range === '32 more') {
-              $subQuery->whereRaw('CAST(display_size AS DECIMAL(10,2)) >= 32');
+              $sub->whereRaw('CAST(display_size AS DECIMAL(10,2)) >= 32');
             }
           });
         }
       });
     }
 
-    // response time filter
+    // RESPONSE TIME FILTER
     if ($request->filled('response_time')) {
-      $products->where(function ($query) use ($request) {
+      $query->where(function ($q) use ($request) {
         foreach ((array) $request->response_time as $range) {
-          $query->orWhere(function ($subQuery) use ($range) {
+          $q->orWhere(function ($sub) use ($range) {
             if ($range === '1 ms or less') {
-              $subQuery->whereRaw('CAST(response_time AS DECIMAL(10,2)) <= 1');
+              $sub->whereRaw('CAST(response_time AS DECIMAL(10,2)) <= 1');
             }
-
             if ($range === '2 - 4 ms') {
-              $subQuery->whereRaw('CAST(response_time AS DECIMAL(10,2)) BETWEEN 2 AND 4');
+              $sub->whereRaw('CAST(response_time AS DECIMAL(10,2)) BETWEEN 2 AND 4');
             }
-
             if ($range === '5 ms more') {
-              $subQuery->whereRaw('CAST(response_time AS DECIMAL(10,2)) >= 5');
+              $sub->whereRaw('CAST(response_time AS DECIMAL(10,2)) >= 5');
             }
           });
         }
       });
     }
 
-    // price input filter
+    // CUSTOM MIN / MAX PRICE
     if ($request->filled('min_price')) {
-      $products->where('discounted_price', '>=', $request->min_price);
+      $query->where('discounted_price', '>=', $request->min_price);
     }
-
     if ($request->filled('max_price')) {
-      $products->where('discounted_price', '<=', $request->max_price);
+      $query->where('discounted_price', '<=', $request->max_price);
     }
 
-    // price range filter
+    //  PRICE RANGE FILTER
     if ($request->filled('price_range')) {
-      $products->where(function ($query) use ($request) {
+      $query->where(function ($q) use ($request) {
         foreach ((array) $request->price_range as $range) {
           [$min, $max] = explode('-', $range);
-
-          $query->orWhere(function ($subQuery) use ($min, $max) {
-            $subQuery->where('discounted_price', '>=', $min);
-
+          $q->orWhere(function ($sub) use ($min, $max) {
+            $sub->where('discounted_price', '>=', $min);
             if ($max !== 'more') {
-              $subQuery->where('discounted_price', '<=', $max);
+              $sub->where('discounted_price', '<=', $max);
             }
           });
         }
       });
     }
 
-    // connection types filter
+    //  CONNECTION TYPE FILTER
     if ($request->filled('connection_types')) {
       foreach ((array) $request->connection_types as $connection) {
-        $products->whereRaw(
+        $query->whereRaw(
           "JSON_EXTRACT(connection_types, '$.\"$connection\"') IS NOT NULL"
         );
       }
     }
 
-    // sort
+    //  SORTING
+
     if ($request->sort === 'lowest') {
-      $products->orderBy('discounted_price');
+      $query->orderBy('discounted_price');
     } elseif ($request->sort === 'highest') {
-      $products->orderByDesc('discounted_price');
+      $query->orderByDesc('discounted_price');
     } else {
-      $products->latest();
+      $query->latest();
     }
 
-    $products = $products
-      ->paginate(22)
+    //  PAGINATION
+    $products = $query
+      ->paginate(28)
       ->withQueryString();
 
+    // FILTER COUNTS
     $filterCounts = $this->getFilterCounts();
 
-    return view('products.index', compact('products', 'filterCounts'));
+    // CURRENT VIEW MODE
+    $currentView = $request->input('view', 'grid');
+
+    // ACTIVE FILTERS
+    $activeFilters = $request->except(['sort', 'page', 'min_price', 'max_price', 'view', 'delete']);
+
+    // CHECK ACTIVE FILTERS
+    $hasActiveFilters = $this->hasActiveFilters(
+      $request,
+      $activeFilters
+    );
+
+    // RETURN VIEW
+    return view('products.index', [
+      'products'         => $products,
+      'filters'          => $this->filters,
+      'connections'      => $this->connections,
+      'priceRanges'      => $this->priceRanges,
+      'filterCounts'     => $filterCounts,
+      'currentView'      => $currentView,
+      'activeFilters'    => $activeFilters,
+      'hasActiveFilters' => $hasActiveFilters,
+    ]);
   }
+
+  // --------------------------------------------------------------------------
+  // SHOW PRODUCT DETAIL
+  // --------------------------------------------------------------------------
+
+  public function show(Product $product) {
+    return view('products.productdetail', compact('product'));
+  }
+
+  // --------------------------------------------------------------------------
+  // CREATE PRODUCT PAGE
+  // --------------------------------------------------------------------------
 
   public function create() {
     $this->checkAdmin();
@@ -137,12 +258,19 @@ class ProductController extends Controller {
     return view('products.create');
   }
 
+  // --------------------------------------------------------------------------
+  // STORE PRODUCT
+  // --------------------------------------------------------------------------
+
   public function store(Request $request) {
     $this->checkAdmin();
 
-    $data = $this->validateProduct($request);
+    $validated = $this->validateProduct($request);
 
-    $data = $this->prepareProductData($request, $data);
+    $data = $this->prepareProductData(
+      $request,
+      $validated
+    );
 
     Product::create($data);
 
@@ -151,9 +279,9 @@ class ProductController extends Controller {
       ->with('success', 'Product created successfully.');
   }
 
-  public function show(Product $product) {
-    return view('products.productdetail', compact('product'));
-  }
+  // --------------------------------------------------------------------------
+  // EDIT PRODUCT PAGE
+  // --------------------------------------------------------------------------
 
   public function edit(Product $product) {
     $this->checkAdmin();
@@ -161,12 +289,19 @@ class ProductController extends Controller {
     return view('products.edit', compact('product'));
   }
 
+  // --------------------------------------------------------------------------
+  // UPDATE PRODUCT
+  // --------------------------------------------------------------------------
+
   public function update(Request $request, Product $product) {
     $this->checkAdmin();
 
-    $data = $this->validateProduct($request);
+    $validated = $this->validateProduct($request);
 
-    $data = $this->prepareProductData($request, $data);
+    $data = $this->prepareProductData(
+      $request,
+      $validated
+    );
 
     $product->update($data);
 
@@ -174,6 +309,10 @@ class ProductController extends Controller {
       ->route('products.index')
       ->with('success', 'Product updated successfully.');
   }
+
+  // --------------------------------------------------------------------------
+  // DELETE PRODUCT
+  // --------------------------------------------------------------------------
 
   public function destroy(Product $product) {
     $this->checkAdmin();
@@ -185,12 +324,15 @@ class ProductController extends Controller {
       ->with('success', 'Product deleted successfully.');
   }
 
+  // --------------------------------------------------------------------------
+  // VALIDATE PRODUCT DATA
+  // --------------------------------------------------------------------------
+
   private function validateProduct(Request $request) {
     return $request->validate([
       'image'            => ['nullable', 'string'],
       'brand'            => ['required', 'string'],
       'name'             => ['required', 'string'],
-
       'application'      => ['nullable', 'string'],
       'display_size'     => ['nullable', 'string'],
       'resolution'       => ['nullable', 'string'],
@@ -199,62 +341,88 @@ class ProductController extends Controller {
       'aspect_ratio'     => ['nullable', 'string'],
       'response_time'    => ['nullable', 'string'],
       'screen_curvature' => ['nullable', 'string'],
-
       'brightness'       => ['nullable', 'string'],
       'color_bit'        => ['nullable', 'string'],
       'color_depth'      => ['nullable', 'string'],
       'contrast_ratio'   => ['nullable', 'string'],
       'accessory_in_box' => ['nullable', 'string'],
       'weight'           => ['nullable', 'string'],
-
       'dimension_width'  => ['nullable', 'numeric'],
       'dimension_height' => ['nullable', 'numeric'],
       'dimension_depth'  => ['nullable', 'numeric'],
-
       'price'            => ['required', 'numeric', 'min:0'],
       'discount_type'    => ['nullable', 'in:percent,fixed'],
       'discount'         => ['nullable', 'numeric', 'min:0'],
     ]);
   }
 
-  private function prepareProductData(Request $request, array $data) {
-    $data['connection_types'] = $this->prepareConnectionTypes($request);
-    $data['color_gamuts']     = $this->prepareColorGamuts($request);
+  //  --------------------------------------------------------------------------
+  //  PREPARE PRODUCT DATA
+  //  --------------------------------------------------------------------------
 
-    $price        = (float) $request->input('price', 0);
-    $discount     = (float) $request->input('discount', 0);
+  private function prepareProductData(
+    Request $request,
+    array $data
+  ) {
+    $data['connection_types'] = $this->prepareConnectionTypes($request);
+
+    $data['color_gamuts'] = $this->prepareColorGamuts($request);
+
+    // DISCOUNT CALCULATION
+    $price = (float) $request->input('price', 0);
+
+    $discount = (float) $request->input('discount', 0);
+
     $discountType = $request->input('discount_type', 'percent');
 
     if ($discount <= 0) {
-      $discount        = 0;
+
+      $discount = 0;
+
       $discountedPrice = $price;
+
     } elseif ($discountType === 'percent') {
+
       $discountedPrice = $price - ($price * $discount / 100);
+
     } else {
+
       $discountedPrice = max(0, $price - $discount);
     }
 
-    $data['price']            = $price;
-    $data['discount']         = $discount;
-    $data['discount_type']    = $discountType;
+    $data['price'] = $price;
+
+    $data['discount'] = $discount;
+
+    $data['discount_type'] = $discountType;
+
     $data['discounted_price'] = $discountedPrice;
 
     return $data;
   }
 
-  private function prepareConnectionTypes(Request $request) {
-    $ports = ['HDMI', 'DisplayPort', 'USB-C', 'Thunderbolt', 'VGA', 'USB', 'RJ45'];
+  // --------------------------------------------------------------------------
+  // PREPARE CONNECTION TYPES
+  // --------------------------------------------------------------------------
 
+  private function prepareConnectionTypes(Request $request) {
     $connectionTypes = [];
 
-    foreach ($ports as $port) {
+    foreach ($this->connections as $port) {
+
       if ($request->has("connection_enable_$port")) {
-        $connectionTypes[$port] = (int) $request->input("connection_count_$port", 1);
+
+        $connectionTypes[$port] =
+        (int) $request->input("connection_count_$port", 1);
       }
     }
 
     return $connectionTypes;
   }
+
+  // --------------------------------------------------------------------------
+  // PREPARE COLOR GAMUTS
+  // --------------------------------------------------------------------------
 
   private function prepareColorGamuts(Request $request) {
     $gamuts = [
@@ -267,10 +435,13 @@ class ProductController extends Controller {
     $colorGamuts = [];
 
     foreach ($gamuts as $formKey => $dbKey) {
+
       if ($request->has("gamut_enable_$formKey")) {
+
         $percent = $request->input("gamut_percent_$formKey");
 
         if ($percent !== null && $percent !== '') {
+
           $colorGamuts[$dbKey] = (float) $percent;
         }
       }
@@ -279,11 +450,47 @@ class ProductController extends Controller {
     return $colorGamuts;
   }
 
+  // --------------------------------------------------------------------------
+  // CHECK ACTIVE FILTERS
+  // --------------------------------------------------------------------------
+
+  private function hasActiveFilters(
+    Request $request,
+    array $activeFilters
+  ) {
+    foreach ($activeFilters as $key => $values) {
+
+      foreach ((array) $values as $value) {
+
+        if (
+          $value !== null &&
+          $value !== '' &&
+          $value !== '1' &&
+          $key !== '_token' &&
+          $key !== 'delete' &&
+          strtolower($value) !== 'delete' &&
+          strlen($value) < 40
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return;
+    $request->filled('min_price') |
+    $request->filled('max_price');
+  }
+
+  // --------------------------------------------------------------------------
+  // FILTER COUNTS
+  // --------------------------------------------------------------------------
+
   private function getFilterCounts() {
     $allProducts = Product::all();
 
     $filterCounts = [];
 
+    // NORMAL FILTER COUNTS
     foreach ([
       'brand',
       'application',
@@ -292,99 +499,57 @@ class ProductController extends Controller {
       'panel_type',
       'aspect_ratio',
     ] as $field) {
+
       $filterCounts[$field] = $allProducts
         ->groupBy($field)
         ->map(fn($items) => $items->count())
         ->toArray();
     }
 
-    // display size counts
-    $displayRanges = [
-      'less 24' => [null, 24],
-      '23 - 24' => [23, 24],
-      '25 - 27' => [25, 27],
-      '30 - 32' => [30, 32],
-      '32 more' => [32, null],
-    ];
+    // DISPLAY SIZE COUNTS
+    $filterCounts['display_size'] = $this->countRange(
+      $allProducts,
+      [
+        'less 24' => [null, 24],
+        '25 - 27' => [25, 27],
+        '30 - 32' => [30, 32],
+        '32 more' => [32, null],
+      ],
+      'display_size'
+    );
 
-    $filterCounts['display_size'] = [];
+    // RESPONSE TIME COUNTS
+    $filterCounts['response_time'] = $this->countRange(
+      $allProducts,
+      [
+        '1 ms or less' => [null, 1],
+        '2 - 4 ms'     => [2, 4],
+        '5 ms more'    => [5, null],
+      ],
+      'response_time'
+    );
 
-    foreach ($displayRanges as $key => [$min, $max]) {
-      $filterCounts['display_size'][$key] = $allProducts
-        ->filter(function ($product) use ($min, $max) {
-          $value = (float) $product->display_size;
+    // PRICE RANGE COUNTS
+    $filterCounts['price_range'] = $this->countRange(
+      $allProducts,
+      [
+        '61-80'    => [61, 80],
+        '81-100'   => [81, 100],
+        '101-200'  => [101, 200],
+        '201-400'  => [201, 400],
+        '401-600'  => [401, 600],
+        '601-more' => [601, null],
+      ],
+      'discounted_price'
+    );
 
-          if ($min !== null && $value < $min) {
-            return false;
-          }
-
-          if ($max !== null && $value > $max) {
-            return false;
-          }
-
-          return true;
-        })
-        ->count();
-    }
-
-    // response time counts
-    $responseRanges = [
-      '1 ms or less' => [null, 1],
-      '2 - 4 ms'     => [2, 4],
-      '5 ms more'    => [5, null],
-    ];
-
-    $filterCounts['response_time'] = [];
-
-    foreach ($responseRanges as $key => [$min, $max]) {
-      $filterCounts['response_time'][$key] = $allProducts
-        ->filter(function ($product) use ($min, $max) {
-          $value = (float) $product->response_time;
-
-          if ($min !== null && $value < $min) {
-            return false;
-          }
-
-          if ($max !== null && $value > $max) {
-            return false;
-          }
-
-          return true;
-        })
-        ->count();
-    }
-
-    // price counts
-    $priceRanges = [
-      '61-80'    => [61, 80],
-      '81-100'   => [81, 100],
-      '101-200'  => [101, 200],
-      '201-400'  => [201, 400],
-      '401-600'  => [401, 600],
-      '601-more' => [601, null],
-    ];
-
-    $filterCounts['price_range'] = [];
-
-    foreach ($priceRanges as $key => [$min, $max]) {
-      $filterCounts['price_range'][$key] = $allProducts
-        ->filter(function ($product) use ($min, $max) {
-          $price = $product->discounted_price ?? $product->price;
-
-          if ($max === null) {
-            return $price >= $min;
-          }
-
-          return $price >= $min && $price <= $max;
-        })
-        ->count();
-    }
-
-    // connection counts
+    // CONNECTION TYPE COUNTS;
     $filterCounts['connection_types'] = [];
 
     foreach ($allProducts as $product) {
+
       foreach (($product->connection_types ?? []) as $name => $count) {
+
         $filterCounts['connection_types'][$name] =
           ($filterCounts['connection_types'][$name] ?? 0) + 1;
       }
@@ -392,7 +557,51 @@ class ProductController extends Controller {
 
     return $filterCounts;
   }
-}
 
-// อะไรบ้างที่ ควรลบจาก products/ index แล้วเอาไปใส่ใน productcontroller
-// เอา productController มาทั้งหน้า
+  //--------------------------------------------------------------------------
+  // RANGE COUNT HELPER
+  //--------------------------------------------------------------------------
+
+  private function countRange(
+    $products,
+    array $ranges,
+    string $field
+  ) {
+    $counts = [];
+
+    foreach ($ranges as $key => [$min, $max]) {
+
+      $counts[$key] = $products
+        ->filter(function ($product) use (
+          $field,
+          $min,
+          $max
+        ) {
+          $value = (float) ($product->$field ?? 0);
+
+          if ($min !== null && $value < $min) {
+            return false;
+          }
+
+          if ($max !== null && $value > $max) {
+            return false;
+          }
+
+          return true;
+        })
+        ->count();
+    }
+    return $counts;
+  }
+
+  //--------------------------------------------------------------------------
+  // ADMIN CHECK
+  //--------------------------------------------------------------------------
+
+  private function checkAdmin() {
+    $user = \Illuminate\Support\Facades\Auth::user();
+    if (! $user || $user->role !== 'admin') {
+      abort(403);
+    }
+  }
+}
